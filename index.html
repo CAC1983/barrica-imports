@@ -1012,6 +1012,8 @@ const emptyEl = document.getElementById('catalogEmpty');
 const countEl = document.getElementById('catalogCount');
 const searchInput = document.getElementById('searchInput');
 
+let cart = [];
+
 function renderCatalog() {
   const activeCat = document.querySelector('.filter-btn.active').dataset.cat;
   const query = searchInput.value.toLowerCase().trim();
@@ -1080,8 +1082,6 @@ searchInput.addEventListener('input', renderCatalog);
 renderCatalog();
 
 // ── Cart ──
-let cart = [];
-
 function addToCart(idx) {
   if (cart.some(c => c.id === idx)) return;
   cart.push({ id: idx, qty: 1 });
