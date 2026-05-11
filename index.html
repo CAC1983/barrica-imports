@@ -689,6 +689,68 @@ footer {
   transition: all 0.3s;
 }
 .cart-clear-btn:hover { border-color: #c0392b; color: #e74c3c; }
+
+/* ── Order Form Modal ── */
+.form-overlay {
+  position: fixed; inset: 0; z-index: 400;
+  background: rgba(0,0,0,0.7);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.form-overlay.open { opacity: 1; pointer-events: all; }
+.order-form {
+  background: var(--bg2); border: 1px solid var(--card-border);
+  border-radius: 16px; padding: 36px; width: 420px; max-width: 90vw;
+  max-height: 90vh; overflow-y: auto;
+  transform: translateY(20px); transition: transform 0.3s;
+}
+.form-overlay.open .order-form { transform: translateY(0); }
+.order-form h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700; color: var(--gold-light);
+  margin-bottom: 6px;
+}
+.order-form .form-sub {
+  font-size: 12px; color: var(--text-dim); margin-bottom: 24px;
+}
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block; font-size: 11px; font-weight: 600;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--gold-dim); margin-bottom: 6px;
+}
+.form-group input, .form-group textarea {
+  width: 100%; padding: 12px 16px;
+  background: rgba(45,31,20,0.8);
+  border: 1px solid var(--card-border);
+  border-radius: 8px; outline: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px; color: var(--text);
+  transition: border-color 0.3s;
+}
+.form-group input:focus, .form-group textarea:focus { border-color: var(--gold); }
+.form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-dark); }
+.form-group textarea { resize: vertical; min-height: 60px; }
+.form-required { color: #c0392b; }
+.form-actions { display: flex; gap: 12px; margin-top: 24px; }
+.form-submit {
+  flex: 1; padding: 14px;
+  background: #25d366; border: none; border-radius: 8px;
+  color: #fff; font-family: 'Montserrat', sans-serif;
+  font-size: 13px; font-weight: 600; letter-spacing: 1px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background 0.3s;
+}
+.form-submit:hover { background: #1da851; }
+.form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.form-cancel {
+  padding: 14px 20px;
+  background: transparent; border: 1px solid var(--card-border);
+  color: var(--text-dim); font-family: 'Montserrat', sans-serif;
+  font-size: 12px; font-weight: 500; border-radius: 8px;
+  cursor: pointer; transition: all 0.3s;
+}
+.form-cancel:hover { border-color: var(--gold); color: var(--gold); }
 </style>
 </head>
 <body>
@@ -877,6 +939,36 @@ footer {
       <span>&#128172;</span> Enviar Pedido por WhatsApp
     </button>
     <button class="cart-clear-btn" onclick="clearCart()">Vaciar carrito</button>
+  </div>
+</div>
+
+<!-- ═══ ORDER FORM ═══ -->
+<div class="form-overlay" id="formOverlay" onclick="if(event.target===this)closeForm()">
+  <div class="order-form">
+    <h3>Datos de Contacto</h3>
+    <p class="form-sub">Completa tus datos para enviar el pedido por WhatsApp</p>
+    <div class="form-group">
+      <label>Nombre <span class="form-required">*</span></label>
+      <input type="text" id="formNombre" placeholder="Tu nombre completo">
+    </div>
+    <div class="form-group">
+      <label>Tel&eacute;fono <span class="form-required">*</span></label>
+      <input type="tel" id="formTelefono" placeholder="0414-1234567">
+    </div>
+    <div class="form-group">
+      <label>Ciudad <span class="form-required">*</span></label>
+      <input type="text" id="formCiudad" placeholder="Caracas, Valencia, Maracaibo...">
+    </div>
+    <div class="form-group">
+      <label>Nota (opcional)</label>
+      <textarea id="formNota" placeholder="Direcci&oacute;n de entrega, horario preferido, etc."></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="form-cancel" onclick="closeForm()">Cancelar</button>
+      <button class="form-submit" id="formSubmit" onclick="submitOrder()">
+        <span>&#128172;</span> Enviar por WhatsApp
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1156,18 +1248,82 @@ function toggleCart() {
   document.body.style.overflow = isOpen ? '' : 'hidden';
 }
 
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzSjeInp7dddnL6XGNK_nx-0REzpsZLl0YLq5tGLXV886PUFbjHjEcVhCUeUPGeVa2p/exec';
+// TODO: reemplazar con número real de WhatsApp
+const WA_PHONE = '584141234567';
+
 function sendWhatsApp() {
   if (cart.length === 0) return;
-  let msg = '*Pedido Barrica Imports*\n\n';
+  document.getElementById('formOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeForm() {
+  document.getElementById('formOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function submitOrder() {
+  const nombre = document.getElementById('formNombre').value.trim();
+  const telefono = document.getElementById('formTelefono').value.trim();
+  const ciudad = document.getElementById('formCiudad').value.trim();
+  const nota = document.getElementById('formNota').value.trim();
+
+  if (!nombre || !telefono || !ciudad) {
+    alert('Por favor completa nombre, teléfono y ciudad.');
+    return;
+  }
+
+  const btn = document.getElementById('formSubmit');
+  btn.disabled = true;
+  btn.innerHTML = 'Enviando...';
+
+  // Build product list
+  let productos = '';
+  cart.forEach(c => {
+    const p = PRODUCTS[c.id];
+    if (p) productos += `${p.brand} \u2014 ${p.variety} x${c.qty}\n`;
+  });
+  const totalQty = cart.reduce((s, c) => s + c.qty, 0);
+
+  // Send to Google Sheet
+  fetch(SHEET_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      nombre,
+      telefono,
+      ciudad,
+      productos,
+      cantidad: totalQty,
+      nota
+    })
+  }).catch(() => {});
+
+  // Build WhatsApp message
+  let msg = `*Pedido Barrica Imports*\n\n`;
+  msg += `*Cliente:* ${nombre}\n`;
+  msg += `*Tel:* ${telefono}\n`;
+  msg += `*Ciudad:* ${ciudad}\n`;
+  if (nota) msg += `*Nota:* ${nota}\n`;
+  msg += `\n*Productos:*\n`;
   cart.forEach(c => {
     const p = PRODUCTS[c.id];
     if (p) msg += `\u2022 ${p.brand} \u2014 ${p.variety} x${c.qty}\n`;
   });
-  const totalQty = cart.reduce((s, c) => s + c.qty, 0);
   msg += `\n*Total: ${totalQty} producto${totalQty > 1 ? 's' : ''}*`;
-  // TODO: reemplazar con número real de WhatsApp
-  const phone = '584141234567';
-  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+
+  window.open(`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
+
+  // Reset
+  btn.disabled = false;
+  btn.innerHTML = '<span>&#128172;</span> Enviar por WhatsApp';
+  closeForm();
+  toggleCart();
+  cart = [];
+  updateCartUI();
+  renderCatalog();
 }
 
 // ── Scroll animations ──
