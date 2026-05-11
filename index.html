@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barrica Imports — Importadora de Bebidas Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════
+   BARRICA IMPORTS — LANDING PAGE
+   Para agregar productos: editar el array PRODUCTS abajo.
+   ══════════════════════════════════════════════════════════ */
+
+:root {
+  --bg: #1a1210;
+  --bg2: #231a14;
+  --bg3: #2d1f14;
+  --gold: #c4943e;
+  --gold-light: #d4a855;
+  --gold-dim: #8a7040;
+  --text: #e8d5b8;
+  --text-dim: #8a7a5a;
+  --text-dark: #5a4a2a;
+  --white: #f5f0eb;
+  --card-bg: rgba(45,31,20,0.6);
+  --card-border: rgba(196,148,62,0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ── Hero Logo Dramatic Animation ── */
+@keyframes ringDraw {
+  0% { stroke-dashoffset: 580; opacity: 0; }
+  10% { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 1; }
+}
+@keyframes hoopPulse {
+  0% { opacity: 0; transform: scale(0.85); }
+  60% { opacity: 0.35; transform: scale(1.04); }
+  100% { opacity: 0.25; transform: scale(1); }
+}
+@keyframes rivetShoot {
+  0% { opacity: 0; transform: scale(0) translateY(0); }
+  50% { opacity: 1; transform: scale(1.6); }
+  75% { transform: scale(0.9); }
+  100% { opacity: 0.6; transform: scale(1); }
+}
+@keyframes rivetDiag {
+  0% { opacity: 0; transform: scale(0); }
+  60% { opacity: 0.7; transform: scale(1.4); }
+  100% { opacity: 0.4; transform: scale(1); }
+}
+@keyframes staveFade {
+  0% { opacity: 0; }
+  100% { opacity: 0.12; }
+}
+@keyframes letterReveal {
+  0% { opacity: 0; transform: scale(0.3); filter: blur(12px); }
+  50% { opacity: 1; transform: scale(1.12); filter: blur(0px); }
+  70% { transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); filter: blur(0px); }
+}
+@keyframes glowPulse {
+  0% { filter: drop-shadow(0 0 0px transparent); }
+  50% { filter: drop-shadow(0 0 30px rgba(196,148,62,0.5)); }
+  100% { filter: drop-shadow(0 0 8px rgba(196,148,62,0.15)); }
+}
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.hero-logo-wrap {
+  margin-bottom: 40px;
+  animation: logoFloat 5s ease-in-out infinite;
+  animation-delay: 3s;
+}
+
+.hero-logo-svg { overflow: visible; }
+
+/* All pieces hidden by default, animated when .play is added */
+.hero-logo-svg .ring-outer {
+  stroke-dasharray: 580; stroke-dashoffset: 580; opacity: 0;
+}
+.hero-logo-svg .hoop-band { opacity: 0; transform-origin: center; }
+.hero-logo-svg .hoop-inner { opacity: 0; }
+.hero-logo-svg .stave { opacity: 0; }
+.hero-logo-svg .rivet-main { opacity: 0; transform-origin: center; }
+.hero-logo-svg .rivet-diag { opacity: 0; transform-origin: center; }
+.hero-logo-svg .logo-letter { opacity: 0; transform-origin: center; }
+
+/* Triggered state */
+.hero-logo-wrap.play .ring-outer {
+  animation: ringDraw 1.4s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.hero-logo-wrap.play .hoop-band {
+  animation: hoopPulse 0.8s ease forwards;
+  animation-delay: 0.6s;
+}
+.hero-logo-wrap.play .hoop-inner {
+  animation: fadeIn 0.6s ease forwards;
+  animation-delay: 0.8s;
+}
+.hero-logo-wrap.play .stave {
+  animation: staveFade 0.8s ease forwards;
+  animation-delay: 0.9s;
+}
+.hero-logo-wrap.play .rivet-main {
+  animation: rivetShoot 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+.hero-logo-wrap.play .rivet-main:nth-child(5)  { animation-delay: 1.0s; }
+.hero-logo-wrap.play .rivet-main:nth-child(6)  { animation-delay: 1.08s; }
+.hero-logo-wrap.play .rivet-main:nth-child(7)  { animation-delay: 1.16s; }
+.hero-logo-wrap.play .rivet-main:nth-child(8)  { animation-delay: 1.24s; }
+.hero-logo-wrap.play .rivet-diag:nth-child(9)  { animation-delay: 1.35s; }
+.hero-logo-wrap.play .rivet-diag:nth-child(10) { animation-delay: 1.40s; }
+.hero-logo-wrap.play .rivet-diag:nth-child(11) { animation-delay: 1.45s; }
+.hero-logo-wrap.play .rivet-diag:nth-child(12) { animation-delay: 1.50s; }
+.hero-logo-wrap.play .logo-letter {
+  animation: letterReveal 0.9s cubic-bezier(0.34,1.56,0.64,1) forwards, glowPulse 1.2s ease forwards;
+  animation-delay: 1.6s;
+}
+
+/* Hero elements wait for logo */
+.hero-content .hero-title,
+.hero-content .hero-sub,
+.hero-content .hero-line,
+.hero-content .hero-tagline,
+.hero-content .hero-cta { opacity: 0; }
+
+.hero-content.play .hero-title  { animation: fadeUp 0.7s ease forwards; animation-delay: 2.2s; }
+.hero-content.play .hero-sub    { animation: fadeUp 0.7s ease forwards; animation-delay: 2.4s; }
+.hero-content.play .hero-line   { animation: fadeIn 0.8s ease forwards; animation-delay: 2.6s; }
+.hero-content.play .hero-tagline { animation: fadeUp 0.7s ease forwards; animation-delay: 2.8s; }
+.hero-content.play .hero-cta    { animation: fadeUp 0.7s ease forwards; animation-delay: 3.0s; }
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes rotateSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+.anim-fade-up { opacity: 0; animation: fadeUp 0.8s ease forwards; }
+.anim-fade-in { opacity: 0; animation: fadeIn 1s ease forwards; }
+.anim-scale-in { opacity: 0; animation: scaleIn 0.8s ease forwards; }
+.anim-slide-left { opacity: 0; animation: slideLeft 0.8s ease forwards; }
+.delay-1 { animation-delay: 0.15s; }
+.delay-2 { animation-delay: 0.3s; }
+.delay-3 { animation-delay: 0.45s; }
+.delay-4 { animation-delay: 0.6s; }
+.delay-5 { animation-delay: 0.75s; }
+.delay-6 { animation-delay: 0.9s; }
+
+/* Intersection observer reveal */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Navigation ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(26,18,16,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--card-border);
+  transition: all 0.3s ease;
+}
+nav.scrolled { background: rgba(26,18,16,0.98); }
+.nav-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 16px 30px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.nav-logo .name {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-weight: 700; letter-spacing: 3px; color: var(--gold);
+}
+.nav-logo .sub {
+  font-size: 8px; font-weight: 500; letter-spacing: 5px; color: var(--gold-dim); margin-top: 1px;
+}
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a {
+  text-decoration: none; font-size: 12px; font-weight: 500;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim);
+  transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--gold); }
+
+/* Mobile nav */
+.nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+.nav-toggle span { display: block; width: 22px; height: 2px; background: var(--gold); margin: 5px 0; transition: 0.3s; }
+
+@media (max-width: 768px) {
+  .nav-toggle { display: block; }
+  .nav-links {
+    position: fixed; top: 60px; left: 0; right: 0;
+    background: rgba(26,18,16,0.98);
+    flex-direction: column; align-items: center; gap: 0; padding: 0;
+    max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
+  }
+  .nav-links.open { max-height: 300px; border-bottom: 1px solid var(--card-border); }
+  .nav-links a { display: block; padding: 16px; width: 100%; text-align: center; }
+}
+
+/* ── Hero ── */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 40%, rgba(196,148,62,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 80%, rgba(196,148,62,0.04) 0%, transparent 40%);
+}
+/* Floating particles */
+.particle {
+  position: absolute; border-radius: 50%;
+  background: var(--gold); opacity: 0.1;
+  animation: float 6s ease-in-out infinite;
+}
+.p1 { width: 4px; height: 4px; top: 20%; left: 15%; animation-delay: 0s; animation-duration: 7s; }
+.p2 { width: 3px; height: 3px; top: 60%; left: 80%; animation-delay: 1s; animation-duration: 5s; }
+.p3 { width: 5px; height: 5px; top: 40%; left: 60%; animation-delay: 2s; animation-duration: 8s; }
+.p4 { width: 3px; height: 3px; top: 75%; left: 25%; animation-delay: 0.5s; animation-duration: 6s; }
+.p5 { width: 4px; height: 4px; top: 30%; left: 90%; animation-delay: 3s; animation-duration: 7s; }
+.p6 { width: 2px; height: 2px; top: 85%; left: 50%; animation-delay: 1.5s; animation-duration: 5.5s; }
+
+.hero-content {
+  text-align: center; position: relative; z-index: 2;
+  padding: 0 30px; max-width: 800px;
+}
+.hero-logo { margin-bottom: 40px; }
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(42px, 7vw, 72px);
+  font-weight: 800; letter-spacing: 6px;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.hero-sub {
+  font-size: clamp(11px, 2vw, 14px);
+  font-weight: 400; letter-spacing: 8px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 40px;
+}
+.hero-line {
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 0 auto 40px;
+}
+.hero-tagline {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(16px, 3vw, 22px);
+  font-weight: 400; font-style: italic;
+  color: var(--text);
+  opacity: 0.7;
+  margin-bottom: 50px;
+}
+.hero-cta {
+  display: inline-block; padding: 14px 40px;
+  border: 1px solid var(--gold);
+  color: var(--gold); text-decoration: none;
+  font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+  transition: all 0.4s ease;
+  position: relative; overflow: hidden;
+}
+.hero-cta::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--gold); transform: translateX(-101%);
+  transition: transform 0.4s ease;
+}
+.hero-cta:hover { color: var(--bg); }
+.hero-cta:hover::before { transform: translateX(0); }
+.hero-cta span { position: relative; z-index: 1; }
+
+/* Scroll indicator */
+.scroll-indicator {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  animation: pulse 2s ease-in-out infinite;
+}
+.scroll-indicator span {
+  font-size: 9px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase;
+}
+.scroll-arrow {
+  width: 20px; height: 20px; border-right: 1px solid var(--gold-dim);
+  border-bottom: 1px solid var(--gold-dim); transform: rotate(45deg);
+}
+
+/* ── Section Base ── */
+section { padding: 120px 30px; }
+.section-inner { max-width: 1200px; margin: 0 auto; }
+.section-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--gold-dim); margin-bottom: 16px;
+  text-align: center;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700; letter-spacing: 2px;
+  color: var(--gold-light); text-align: center; margin-bottom: 20px;
+}
+.section-desc {
+  max-width: 600px; margin: 0 auto 60px;
+  font-size: 14px; line-height: 1.8; color: var(--text-dim); text-align: center;
+}
+.section-line {
+  width: 40px; height: 1px;
+  background: var(--gold); opacity: 0.4;
+  margin: 0 auto 60px;
+}
+
+/* ── About / Features ── */
+.features-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+.feature-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px; padding: 40px 30px;
+  text-align: center;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.feature-card:hover { transform: translateY(-4px); border-color: rgba(196,148,62,0.35); }
+.feature-icon {
+  font-size: 32px; margin-bottom: 20px;
+  display: block; color: var(--gold);
+}
+.feature-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; font-weight: 700; color: var(--gold-light);
+  margin-bottom: 12px; letter-spacing: 1px;
+}
+.feature-card p {
+  font-size: 13px; line-height: 1.7; color: var(--text-dim);
+}
+
+/* ── Catalog ── */
+#catalogo { background: var(--bg2); }
+
+.catalog-filters {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 10px; margin-bottom: 50px;
+}
+.filter-btn {
+  padding: 10px 24px;
+  background: transparent; border: 1px solid var(--card-border);
+  color: var(--text-dim); font-family: 'Montserrat', sans-serif;
+  font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer; border-radius: 30px;
+  transition: all 0.3s ease;
+}
+.filter-btn:hover { border-color: var(--gold); color: var(--gold); }
+.filter-btn.active {
+  background: var(--gold); border-color: var(--gold); color: var(--bg);
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.product-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  cursor: default;
+  animation: fadeUp 0.5s ease forwards;
+}
+.product-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(196,148,62,0.4);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+.product-img {
+  height: 220px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.product-img .emoji {
+  font-size: 64px;
+  transition: transform 0.5s ease;
+}
+.product-card:hover .product-img .emoji { transform: scale(1.15) rotate(-5deg); }
+.product-img img {
+  max-height: 180px; max-width: 85%;
+  object-fit: contain;
+  transition: transform 0.5s ease;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+}
+.product-card:hover .product-img img { transform: scale(1.08) rotate(-2deg); }
+.product-img .cat-badge {
+  position: absolute; top: 12px; right: 12px;
+  padding: 4px 12px; border-radius: 20px;
+  font-size: 9px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+}
+.product-info { padding: 20px 24px 24px; }
+.product-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; font-weight: 700; color: var(--gold-light);
+  margin-bottom: 4px;
+}
+.product-variety {
+  font-size: 12px; color: var(--text-dim); letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+.product-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.product-tag {
+  padding: 3px 10px; border-radius: 12px;
+  font-size: 9px; font-weight: 600; letter-spacing: 1px;
+  background: rgba(196,148,62,0.1); color: var(--gold-dim);
+  border: 1px solid rgba(196,148,62,0.15);
+}
+
+/* Category-specific colors */
+.cat-craft .product-img { background: linear-gradient(135deg, #1a2a1a 0%, #1a1a10 100%); }
+.cat-craft .cat-badge { background: rgba(90,165,90,0.2); color: #7ab87a; }
+.cat-comercial .product-img { background: linear-gradient(135deg, #1a1a2a 0%, #10101a 100%); }
+.cat-comercial .cat-badge { background: rgba(90,120,180,0.2); color: #7a9ad4; }
+.cat-sinalcohol .product-img { background: linear-gradient(135deg, #2a1a2a 0%, #1a1018 100%); }
+.cat-sinalcohol .cat-badge { background: rgba(180,90,160,0.2); color: #c48ab4; }
+.cat-seltzer .product-img { background: linear-gradient(135deg, #1a2a2a 0%, #101a1a 100%); }
+.cat-seltzer .cat-badge { background: rgba(90,180,180,0.2); color: #7ac4c4; }
+.cat-vino .product-img { background: linear-gradient(135deg, #2a1018 0%, #1a0a10 100%); }
+.cat-vino .cat-badge { background: rgba(180,60,80,0.2); color: #d47a8a; }
+.cat-licor .product-img { background: linear-gradient(135deg, #2a2010 0%, #1a1508 100%); }
+.cat-licor .cat-badge { background: rgba(196,148,62,0.2); color: var(--gold); }
+
+.catalog-count {
+  text-align: center; margin-top: 40px;
+  font-size: 12px; color: var(--text-dim); letter-spacing: 1px;
+}
+
+/* Empty state */
+.catalog-empty {
+  text-align: center; padding: 80px 20px;
+  font-size: 14px; color: var(--text-dim);
+  display: none;
+}
+
+/* ── Contact / CTA ── */
+#contacto { background: var(--bg); position: relative; }
+.contact-content {
+  text-align: center; max-width: 600px; margin: 0 auto;
+}
+.contact-links {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;
+  margin-top: 40px;
+}
+.contact-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 28px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  text-decoration: none; color: var(--text);
+  font-size: 13px; font-weight: 500;
+  transition: all 0.3s;
+}
+.contact-link:hover { border-color: var(--gold); color: var(--gold); }
+.contact-link .icon { font-size: 18px; }
+
+/* ── Footer ── */
+footer {
+  padding: 40px 30px;
+  border-top: 1px solid var(--card-border);
+  text-align: center;
+}
+.footer-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; font-weight: 700; letter-spacing: 3px;
+  color: var(--gold); margin-bottom: 8px;
+}
+.footer-sub {
+  font-size: 10px; letter-spacing: 4px; color: var(--text-dark);
+  text-transform: uppercase;
+}
+.footer-copy {
+  margin-top: 20px; font-size: 10px; color: var(--text-dark); letter-spacing: 1px;
+}
+
+/* ── Search ── */
+.search-wrapper {
+  max-width: 400px; margin: 0 auto 30px; position: relative;
+}
+.search-input {
+  width: 100%; padding: 12px 20px 12px 44px;
+  background: rgba(45,31,20,0.8);
+  border: 1px solid var(--card-border);
+  border-radius: 30px; outline: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px; color: var(--text);
+  transition: border-color 0.3s;
+}
+.search-input::placeholder { color: var(--text-dim); }
+.search-input:focus { border-color: var(--gold); }
+.search-icon {
+  position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+  color: var(--gold-dim); font-size: 16px;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <svg width="32" height="32" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="92" fill="none" stroke="#c4943e" stroke-width="3.5"/>
+        <circle cx="100" cy="100" r="84" fill="none" stroke="#c4943e" stroke-width="7" opacity="0.25"/>
+        <circle cx="100" cy="100" r="80" fill="none" stroke="#c4943e" stroke-width="2" opacity="0.5"/>
+        <circle cx="100" cy="12" r="5" fill="#c4943e" opacity="0.6"/>
+        <circle cx="100" cy="188" r="5" fill="#c4943e" opacity="0.6"/>
+        <circle cx="12" cy="100" r="5" fill="#c4943e" opacity="0.6"/>
+        <circle cx="188" cy="100" r="5" fill="#c4943e" opacity="0.6"/>
+        <text x="100" y="122" text-anchor="middle" font-family="'Playfair Display', serif" font-size="86" font-weight="800" fill="#c4943e">B</text>
+      </svg>
+      <div>
+        <div class="name">BARRICA</div>
+        <div class="sub">IMPORTS</div>
+      </div>
+    </a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="#inicio" onclick="this.closest('.nav-links').classList.remove('open')">Inicio</a></li>
+      <li><a href="#nosotros" onclick="this.closest('.nav-links').classList.remove('open')">Nosotros</a></li>
+      <li><a href="#catalogo" onclick="this.closest('.nav-links').classList.remove('open')">Cat&aacute;logo</a></li>
+      <li><a href="#contacto" onclick="this.closest('.nav-links').classList.remove('open')">Contacto</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="inicio">
+  <div class="hero-bg"></div>
+  <div class="particle p1"></div>
+  <div class="particle p2"></div>
+  <div class="particle p3"></div>
+  <div class="particle p4"></div>
+  <div class="particle p5"></div>
+  <div class="particle p6"></div>
+
+  <div class="hero-content" id="heroContent">
+    <div class="hero-logo-wrap" id="heroLogo">
+      <svg class="hero-logo-svg" width="160" height="160" viewBox="0 0 200 200">
+        <!-- 1. Outer ring - draws itself -->
+        <circle class="ring-outer" cx="100" cy="100" r="92" fill="none" stroke="#c4943e" stroke-width="2.5"/>
+        <!-- 2. Hoop band - pulses in -->
+        <circle class="hoop-band" cx="100" cy="100" r="84" fill="none" stroke="#c4943e" stroke-width="5" opacity="0.25"/>
+        <!-- 3. Inner hoop -->
+        <circle class="hoop-inner" cx="100" cy="100" r="80" fill="none" stroke="#c4943e" stroke-width="1.2" opacity="0.5"/>
+        <!-- 4. Stave lines -->
+        <line class="stave" x1="100" y1="8" x2="100" y2="192" stroke="#c4943e" stroke-width="0.6" opacity="0.12"/>
+        <line class="stave" x1="68" y1="12" x2="68" y2="188" stroke="#c4943e" stroke-width="0.5" opacity="0.1"/>
+        <line class="stave" x1="132" y1="12" x2="132" y2="188" stroke="#c4943e" stroke-width="0.5" opacity="0.1"/>
+        <!-- 5. Main rivets - shoot in -->
+        <circle class="rivet-main" cx="100" cy="12" r="3.5" fill="#c4943e"/>
+        <circle class="rivet-main" cx="100" cy="188" r="3.5" fill="#c4943e"/>
+        <circle class="rivet-main" cx="12" cy="100" r="3.5" fill="#c4943e"/>
+        <circle class="rivet-main" cx="188" cy="100" r="3.5" fill="#c4943e"/>
+        <!-- 6. Diagonal rivets -->
+        <circle class="rivet-diag" cx="37" cy="37" r="2.5" fill="#c4943e"/>
+        <circle class="rivet-diag" cx="163" cy="37" r="2.5" fill="#c4943e"/>
+        <circle class="rivet-diag" cx="37" cy="163" r="2.5" fill="#c4943e"/>
+        <circle class="rivet-diag" cx="163" cy="163" r="2.5" fill="#c4943e"/>
+        <!-- 7. The B - reveals last with glow -->
+        <text class="logo-letter" x="100" y="120" text-anchor="middle" font-family="'Playfair Display', serif" font-size="82" font-weight="800" fill="#c4943e">B</text>
+      </svg>
+    </div>
+    <h1 class="hero-title">BARRICA</h1>
+    <div class="hero-sub">IMPORTS</div>
+    <div class="hero-line"></div>
+    <p class="hero-tagline">Bebidas premium del mundo a tu puerta</p>
+    <a href="#catalogo" class="hero-cta"><span>Ver Cat&aacute;logo</span></a>
+  </div>
+
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ═══ NOSOTROS ═══ -->
+<section id="nosotros">
+  <div class="section-inner">
+    <div class="section-label reveal">Quiénes Somos</div>
+    <h2 class="section-title reveal">Lo Mejor del Mundo, Aqu&iacute;</h2>
+    <p class="section-desc reveal">
+      Importamos cervezas craft, vinos, licores y bebidas premium directamente desde sus or&iacute;genes. De la f&aacute;brica a tu mesa, sin intermediarios.
+    </p>
+    <div class="section-line reveal"></div>
+
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <span class="feature-icon">&#127866;</span>
+        <h3>Selecci&oacute;n Curada</h3>
+        <p>Cada producto es elegido a mano. Trabajamos directo con cervecer&iacute;as, bodegas y destiler&iacute;as para traer lo mejor.</p>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">&#127758;</span>
+        <h3>Directo al Origen</h3>
+        <p>Sin intermediarios. Importamos desde USA, Europa y Asia con cadena de fr&iacute;o controlada de principio a fin.</p>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">&#9733;</span>
+        <h3>Premium & Craft</h3>
+        <p>Desde IPAs artesanales hasta vinos de reserva. Para quienes buscan algo m&aacute;s que lo que hay en el anaquel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CATÁLOGO ═══ -->
+<section id="catalogo">
+  <div class="section-inner">
+    <div class="section-label reveal">Nuestros Productos</div>
+    <h2 class="section-title reveal">Cat&aacute;logo</h2>
+    <p class="section-desc reveal">
+      Nuestra selecci&oacute;n crece cada mes. Cervezas craft, comerciales, vinos, licores y m&aacute;s.
+    </p>
+
+    <div class="search-wrapper reveal">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="Buscar producto, marca o estilo...">
+    </div>
+
+    <div class="catalog-filters reveal" id="filters"></div>
+    <div class="catalog-grid" id="catalogGrid"></div>
+    <div class="catalog-empty" id="catalogEmpty">No se encontraron productos con ese filtro.</div>
+    <div class="catalog-count" id="catalogCount"></div>
+  </div>
+</section>
+
+<!-- ═══ CONTACTO ═══ -->
+<section id="contacto">
+  <div class="section-inner">
+    <div class="contact-content">
+      <div class="section-label reveal">Contacto</div>
+      <h2 class="section-title reveal">&iquest;Interesado?</h2>
+      <p class="section-desc reveal">
+        Venta al mayor y al detal. Escr&iacute;benos para pedidos, distribución o consultas.
+      </p>
+
+      <div class="contact-links reveal">
+        <a href="#" class="contact-link">
+          <span class="icon">&#128241;</span>
+          <span>WhatsApp</span>
+        </a>
+        <a href="#" class="contact-link">
+          <span class="icon">&#128231;</span>
+          <span>Email</span>
+        </a>
+        <a href="#" class="contact-link">
+          <span class="icon">&#128247;</span>
+          <span>Instagram</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-logo">BARRICA</div>
+  <div class="footer-sub">IMPORTS</div>
+  <div class="footer-copy">&copy; 2026 Barrica Imports. Todos los derechos reservados.</div>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   PRODUCTOS — EDITAR AQUÍ PARA AGREGAR/QUITAR PRODUCTOS
+   ══════════════════════════════════════════════════════════
+
+   Cada producto tiene:
+   - brand:    Nombre de la marca
+   - variety:  Variedad o tipo (puede estar vacío "")
+   - category: Una de estas categorías:
+                "Cerveza Craft", "Cerveza Comercial", "Sin Alcohol",
+                "Seltzer", "Vino", "Licor", "Otro"
+   - tags:     Array de etiquetas descriptivas (ej: ["IPA","Hazy","USA"])
+   - emoji:    Emoji para mostrar (🍺 cerveza, 🍷 vino, 🥃 licor, etc.)
+   - img:      (opcional) Nombre del archivo de imagen en carpeta img/
+               Ej: "tripping-animals.png". Si está vacío se usa el emoji.
+
+   Para agregar un producto: copiar un bloque y cambiar los datos.
+   Para agregar foto: poner la imagen en img/ y llenar el campo img.
+   Para quitar un producto: borrar o comentar el bloque.
+   ══════════════════════════════════════════════════════════ */
+
+const PRODUCTS = [
+  // ── Cervezas Craft ──
+  { brand: "Tripping Animals",  variety: "Hazy IPA",           category: "Cerveza Craft",     tags: ["IPA","Hazy","USA","Florida"],    emoji: "🍺", img: "tripping-animals-hay-ipa.png" },
+  { brand: "Funky Buddha",      variety: "IPA",                 category: "Cerveza Craft",     tags: ["IPA","USA","Florida"],            emoji: "🍺", img: "funky-buda-hazy-ipa.png" },
+  { brand: "Sierra Nevada",     variety: "Hazy Little Thing IPA", category: "Cerveza Craft",   tags: ["IPA","Hazy","USA","California"],  emoji: "🍺", img: "" },
+  { brand: "Sierra Nevada",     variety: "Pale Ale",            category: "Cerveza Craft",     tags: ["Pale Ale","USA","California"],    emoji: "🍺", img: "" },
+  { brand: "Dogfish Head",      variety: "60 Minute IPA",       category: "Cerveza Craft",     tags: ["IPA","USA","Delaware"],           emoji: "🍺", img: "" },
+  { brand: "Founders",          variety: "All Day IPA",         category: "Cerveza Craft",     tags: ["IPA","Session","USA","Michigan"], emoji: "🍺", img: "" },
+  { brand: "Lagunitas",         variety: "Hazy Wonder",         category: "Cerveza Craft",     tags: ["IPA","Hazy","USA","California"],  emoji: "🍺", img: "LAG_Web_Render_Hazy-Wonder_Can_Desktop-675x1024.webp" },
+  { brand: "Samuel Adams",      variety: "Boston Lager",        category: "Cerveza Craft",     tags: ["Lager","USA","Boston"],           emoji: "🍺", img: "samuel-adams-boston-lager.png" },
+  { brand: "Blue Moon",         variety: "Belgian White",       category: "Cerveza Craft",     tags: ["Wheat","Belgian","USA"],          emoji: "🍺", img: "" },
+
+  // ── Cervezas Comerciales ──
+  { brand: "Heineken",          variety: "Original",            category: "Cerveza Comercial", tags: ["Lager","Holanda"],                emoji: "🍺", img: "heineken_og-copy.png" },
+  { brand: "Guinness",          variety: "Draught",             category: "Cerveza Comercial", tags: ["Stout","Irlanda"],                emoji: "🍺", img: "" },
+  { brand: "Pac\u00edfico",     variety: "Clara",               category: "Cerveza Comercial", tags: ["Lager","M\u00e9xico"],            emoji: "🍺", img: "" },
+  { brand: "Asahi",             variety: "Super Dry",           category: "Cerveza Comercial", tags: ["Lager","Jap\u00f3n"],             emoji: "🍺", img: "ASAHI_SUPER_DRY.original.png" },
+  { brand: "Sapporo",           variety: "Premium",             category: "Cerveza Comercial", tags: ["Lager","Jap\u00f3n"],             emoji: "🍺", img: "sapporo-beer.png" },
+  { brand: "Lagunitas",         variety: "IPA",                 category: "Cerveza Comercial", tags: ["IPA","USA","California"],         emoji: "🍺", img: "" },
+
+  // ── Sin Alcohol ──
+  { brand: "Athletic Brewing",  variety: "Run Wild IPA",        category: "Sin Alcohol",       tags: ["IPA","Sin Alcohol","USA"],        emoji: "🍻", img: "" },
+  { brand: "Heineken",          variety: "0.0",                 category: "Sin Alcohol",       tags: ["Lager","Sin Alcohol","Holanda"],  emoji: "🍻", img: "heineken_0-0.png" },
+  { brand: "Michelob Ultra",    variety: "Light",               category: "Sin Alcohol",       tags: ["Light","Low Cal","USA"],          emoji: "🍻", img: "" },
+  { brand: "Kombucha",          variety: "Variados",            category: "Sin Alcohol",       tags: ["Ferm.","Probiotico","Wellness"],  emoji: "🫖", img: "" },
+  { brand: "Mocktails",         variety: "Variados",            category: "Sin Alcohol",       tags: ["Sin Alcohol","Cocktail"],         emoji: "🍹", img: "" },
+
+  // ── Seltzers ──
+  { brand: "High Noon",         variety: "Variados",            category: "Seltzer",           tags: ["Seltzer","USA","Vodka"],          emoji: "🥤", img: "high-noon-Vodka Can_Pineapple_MD_200px.png" },
+
+  // ── Vinos (agregar aquí cuando llegue la lista) ──
+  // { brand: "Ejemplo",        variety: "Malbec",              category: "Vino",              tags: ["Tinto","Argentina"],              emoji: "🍷" },
+
+  // ── Licores (agregar aquí) ──
+  // { brand: "Ejemplo",        variety: "Añejo",               category: "Licor",             tags: ["Ron","Venezuela"],                emoji: "🥃" },
+];
+
+/* ══════════════════════════════════════════════════════════
+   NO TOCAR DE AQUÍ PARA ABAJO (motor del catálogo)
+   ══════════════════════════════════════════════════════════ */
+
+const catClasses = {
+  'Cerveza Craft': 'cat-craft',
+  'Cerveza Comercial': 'cat-comercial',
+  'Sin Alcohol': 'cat-sinalcohol',
+  'Seltzer': 'cat-seltzer',
+  'Vino': 'cat-vino',
+  'Licor': 'cat-licor',
+  'Otro': 'cat-licor',
+};
+
+// Build filters
+const categories = ['Todos', ...new Set(PRODUCTS.map(p => p.category))];
+const filtersEl = document.getElementById('filters');
+categories.forEach(cat => {
+  const btn = document.createElement('button');
+  btn.className = 'filter-btn' + (cat === 'Todos' ? ' active' : '');
+  btn.textContent = cat;
+  btn.dataset.cat = cat;
+  btn.onclick = () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCatalog();
+  };
+  filtersEl.appendChild(btn);
+});
+
+const grid = document.getElementById('catalogGrid');
+const emptyEl = document.getElementById('catalogEmpty');
+const countEl = document.getElementById('catalogCount');
+const searchInput = document.getElementById('searchInput');
+
+function renderCatalog() {
+  const activeCat = document.querySelector('.filter-btn.active').dataset.cat;
+  const query = searchInput.value.toLowerCase().trim();
+
+  let filtered = PRODUCTS;
+
+  if (activeCat !== 'Todos') {
+    filtered = filtered.filter(p => p.category === activeCat);
+  }
+
+  if (query) {
+    filtered = filtered.filter(p =>
+      p.brand.toLowerCase().includes(query) ||
+      p.variety.toLowerCase().includes(query) ||
+      p.category.toLowerCase().includes(query) ||
+      p.tags.some(t => t.toLowerCase().includes(query))
+    );
+  }
+
+  grid.innerHTML = '';
+
+  if (filtered.length === 0) {
+    emptyEl.style.display = 'block';
+    countEl.textContent = '';
+    return;
+  }
+  emptyEl.style.display = 'none';
+
+  filtered.forEach((p, i) => {
+    const catClass = catClasses[p.category] || 'cat-licor';
+    const card = document.createElement('div');
+    card.className = `product-card ${catClass}`;
+    card.style.animationDelay = `${i * 0.05}s`;
+
+    const imgContent = p.img
+      ? `<img src="img/${p.img}" alt="${p.brand} ${p.variety}" onerror="this.style.display='none';this.nextElementSibling.style.display=''">`
+      + `<span class="emoji" style="display:none">${p.emoji}</span>`
+      : `<span class="emoji">${p.emoji}</span>`;
+
+    card.innerHTML = `
+      <div class="product-img">
+        ${imgContent}
+        <span class="cat-badge">${p.category}</span>
+      </div>
+      <div class="product-info">
+        <div class="product-brand">${p.brand}</div>
+        <div class="product-variety">${p.variety || '—'}</div>
+        <div class="product-tags">
+          ${p.tags.map(t => `<span class="product-tag">${t}</span>`).join('')}
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  countEl.textContent = `${filtered.length} de ${PRODUCTS.length} productos`;
+}
+
+searchInput.addEventListener('input', renderCatalog);
+renderCatalog();
+
+// ── Scroll animations ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── Hero logo animation — replays every time you scroll to it ──
+const heroLogo = document.getElementById('heroLogo');
+const heroContent = document.getElementById('heroContent');
+
+function resetHeroAnimation() {
+  heroLogo.classList.remove('play');
+  heroContent.classList.remove('play');
+  // Force reflow to restart CSS animations
+  void heroLogo.offsetWidth;
+  void heroContent.offsetWidth;
+}
+
+function playHeroAnimation() {
+  resetHeroAnimation();
+  requestAnimationFrame(() => {
+    heroLogo.classList.add('play');
+    heroContent.classList.add('play');
+  });
+}
+
+const heroObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      playHeroAnimation();
+    } else {
+      // Reset when leaving so it replays on return
+      resetHeroAnimation();
+    }
+  });
+}, { threshold: 0.3 });
+
+heroObserver.observe(document.getElementById('inicio'));
+
+// ── Nav scroll effect ──
+window.addEventListener('scroll', () => {
+  document.querySelector('nav').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ── Smooth scroll for anchor links ──
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+
+</body>
+</html>
